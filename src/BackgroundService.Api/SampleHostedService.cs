@@ -11,14 +11,14 @@ public class SampleHostedService(ILogger<SampleHostedService> logger) : IHostedS
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation(nameof(StartAsync));
-        await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+        await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
         logger.LogInformation(nameof(StartAsync) + " end");
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation(nameof(StopAsync));
-        await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+        await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
         logger.LogInformation(nameof(StopAsync) + " end");
     }
 }

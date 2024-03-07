@@ -11,8 +11,19 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.WriteTo.Console();
 });
 
-// builder.Services.AddHostedService<SampleBackgroundService>();
+builder.Services.AddHostedService<SampleBackgroundService>();
+
+/*
+builder.Services.Configure<HostOptions>(x =>
+    {
+        x.ServicesStartConcurrently = true;
+        x.ServicesStopConcurrently = true;
+    }
+);
+
 builder.Services.AddHostedService<SampleHostedService>();
+builder.Services.AddHostedService<SampleHostedLifecycleService>();
+*/
 
 var application = builder.Build();
 
