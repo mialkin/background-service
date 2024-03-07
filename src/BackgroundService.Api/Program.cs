@@ -11,7 +11,8 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.WriteTo.Console();
 });
 
-builder.Services.AddHostedService<SampleBackgroundService>();
+// builder.Services.AddHostedService<SampleBackgroundService>();
+builder.Services.AddHostedService<SampleHostedService>();
 
 var application = builder.Build();
 
