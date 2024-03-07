@@ -13,8 +13,8 @@ builder.Host.UseSerilog((context, configuration) =>
 
 builder.Services.AddHostedService<SampleBackgroundService>();
 
-var app = builder.Build();
+var application = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+application.MapGet("/", () => "Hello World!");
 
-app.Run();
+application.Run();
