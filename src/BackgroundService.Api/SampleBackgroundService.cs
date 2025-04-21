@@ -8,14 +8,8 @@ namespace BackgroundService.Api;
 public class SampleBackgroundService(ILogger<SampleBackgroundService> logger)
     : Microsoft.Extensions.Hosting.BackgroundService
 {
-    private const int Minutes = 1;
-
-    private static readonly PeriodicTimer Timer = new(TimeSpan.FromMinutes(Minutes));
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        logger.LogInformation("Timed hosted service is starting");
-
         using PeriodicTimer timer = new(TimeSpan.FromMinutes(1));
 
         while (!stoppingToken.IsCancellationRequested)
