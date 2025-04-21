@@ -19,24 +19,24 @@ public class SampleBackgroundService(ILogger<SampleBackgroundService> logger)
 
         using PeriodicTimer timer = new(TimeSpan.FromMinutes(1));
 
-        try
+        while (!stoppingToken.IsCancellationRequested)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            try
             {
                 logger.LogInformation("Doing some business logic at: {time}", DateTimeOffset.Now);
                 await Task.Delay(TimeSpan.FromSeconds(Random.Shared.Next(10, 50)), stoppingToken);
                 logger.LogInformation("Finished doing some business logic at: {time}", DateTimeOffset.Now);
-
-                await timer.WaitForNextTickAsync(stoppingToken);
             }
-        }
-        catch (OperationCanceledException)
-        {
-            logger.LogInformation("Timed hosted service is stopping");
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Error occurred");
+            catch (OperationCanceledException)
+            {
+                logger.LogInformation("Timed hosted service is stopping");
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "Error occurred");
+            }
+
+            await timer.WaitForNextTickAsync(stoppingToken);
         }
     }
 }
