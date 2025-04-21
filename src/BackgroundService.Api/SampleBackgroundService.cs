@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -23,9 +22,10 @@ public class SampleBackgroundService(ILogger<SampleBackgroundService> logger)
         {
             try
             {
-                logger.LogInformation("Doing some business logic at: {time}", DateTimeOffset.Now);
-                await Task.Delay(TimeSpan.FromSeconds(Random.Shared.Next(10, 50)), stoppingToken);
-                logger.LogInformation("Finished doing some business logic at: {time}", DateTimeOffset.Now);
+                var duration = TimeSpan.FromSeconds(Random.Shared.Next(10, 50));
+                logger.LogInformation("Doing some business logic during {Duration}", duration);
+                await Task.Delay(duration, stoppingToken);
+                logger.LogInformation("Finished doing some business logic during {Duration}", duration);
             }
             catch (OperationCanceledException)
             {
