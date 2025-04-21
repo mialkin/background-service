@@ -9,38 +9,34 @@ namespace BackgroundService.Api;
 public class SampleBackgroundService(ILogger<SampleBackgroundService> logger)
     : Microsoft.Extensions.Hosting.BackgroundService
 {
-    private const int Seconds = 5;
+    private const int Minutes = 1;
+
+    private static readonly PeriodicTimer Timer = new(TimeSpan.FromMinutes(Minutes));
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        logger.LogInformation("Timed hosted service is starting");
+
+        using PeriodicTimer timer = new(TimeSpan.FromMinutes(1));
+
+        try
         {
-            var stopwatch = new Stopwatch();
-
-            try
+            while (!stoppingToken.IsCancellationRequested)
             {
-                logger.LogInformation("Start running task");
-                stopwatch.Start();
+                logger.LogInformation("Doing some business logic at: {time}", DateTimeOffset.Now);
+                await Task.Delay(TimeSpan.FromSeconds(Random.Shared.Next(10, 50)), stoppingToken);
+                logger.LogInformation("Finished doing some business logic at: {time}", DateTimeOffset.Now);
 
-                await Task.Delay(TimeSpan.FromSeconds(Random.Shared.Next(10)), stoppingToken);
-
-                logger.LogInformation("End running task");
+                await timer.WaitForNextTickAsync(stoppingToken);
             }
-            catch (Exception exception)
-            {
-                logger.LogError(exception, "Error running task");
-            }
-            finally
-            {
-                stopwatch.Stop();
-                var timeSpan = stopwatch.Elapsed;
-                var elapsedTime = $"{timeSpan.Hours:00}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}";
-
-                logger.LogInformation("End background service run cycle. Elapsed time: {ElapsedTime}", elapsedTime);
-            }
-
-            logger.LogInformation("Sleeping {Seconds} seconds", Seconds);
-            await Task.Delay(TimeSpan.FromSeconds(Seconds), stoppingToken);
+        }
+        catch (OperationCanceledException)
+        {
+            logger.LogInformation("Timed hosted service is stopping");
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error occurred");
         }
     }
 }
